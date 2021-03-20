@@ -31,113 +31,71 @@ app.get("/",(req,res)=>{
 
 app.get("/url/emotion", (req,res) => {
     const newInstance = getNLUInstance();
-    const querytext = req.query.url
-    const analyzeparams = {
-        'url': querytext,
-        'features': {
-            'entities' : {
-                'emotion' : true,
-                'sentiment': false
-            }, 'keywords': {
-                'emotion': true,
-                'sentiment': false
-
-            }
-        } 
+    const analyzeParams = {
+    "url": req.query.url,
+    "features": {
+      "emotion": {}
     }
+  }
 
-    newInstance.analyze(analyzeparams).then(analysisresults =>
-        {
-           const emotionalanalysis = analysisresults.result.entities[0].emotion
-            return res.send({emotions: emotionalanalysis});
-        }).catch( err =>
-            {
-                console.log(err)
-            })
+  newInstance.analyze(analyzeParams).then(analysisResults => {
+    let emotions = analysisResults.result.emotion.document.emotion;
+    return res.send(emotions);
+  }).catch(err => {
+    return res.send('error:' + err);
+  });
 });
 
 app.get("/url/sentiment", (req,res) => {
     const newInstance = getNLUInstance();
-    const querytext = req.query.url
-    let sentimentresponse
-    const analyzeparams = {
-        'url': querytext,
-        'features': {
-            'entities' : {
-                'sentiment' : true,
-                'emotion'  : false
-            }, 'keywords': {
-                'sentiment': true,
-                'emotion': false
-
-            }
-        } 
+    const analyzeParams = {
+    "url": req.query.url,
+    "features": {
+      "sentiment": {},
     }
-
-    newInstance.analyze(analyzeparams).then(analysisresults =>
-        {
-            console.log(JSON.stringify(analysisresults, null, 2))
-            sentimentresponse = analysisresults.result.entities[0].sentiment.label
-            return res.send({senti: sentimentresponse});
-        }).catch( err =>
-            {
-                console.log(err)
-            })
+  }
+  
+  newInstance.analyze(analyzeParams).then(analysisResults => {
+    let sentiment = JSON.stringify(analysisResults.result.sentiment.document.label, null, 2);
+    return res.send(sentiment);
+  }).catch(err => {
+    return res.send('error:' + err);
+  });
 });
 
 app.get("/text/emotion", (req,res) => {
     const newInstance = getNLUInstance();
-    const querytext = req.query.text
-    const analyzeparams = {
-        'text': querytext,
-        'features': {
-            'entities' : {
-                'emotion' : true,
-                'sentiment': false
-            }, 'keywords': {
-                'emotion': true,
-                'sentiment': false
-
-            }
-        } 
+    const analyzeParams = {
+    "text": req.query.text,
+    "features": {
+      "emotion": {}
     }
+  }
 
-    newInstance.analyze(analyzeparams).then(analysisresults =>
-        {
-            const emotionalanalysis = analysisresults.result.entities[0].emotion
-            return res.send({emotions: emotionalanalysis});
-        }).catch( err =>
-            {
-                console.log(err)
-            })
+  newInstance.analyze(analyzeParams).then(analysisResults => {
+    let emotions = analysisResults.result.emotion.document.emotion;
+    return res.send(emotions);
+  }).catch(err => {
+    return res.send('error:' + err);
+  });
+
 });
 
 app.get("/text/sentiment", (req,res) => {
     const newInstance = getNLUInstance();
-    const querytext = req.query.text
-    const analyzeparams = {
-        'text': querytext,
-        'features': {
-            'entities' : {
-                'sentiment' : true,
-                'emotion'  : false
-            }, 'keywords': {
-                'sentiment': true,
-                'emotion': false
-
-            }
-        } 
+    const analyzeParams = {
+    "text": req.query.text,
+    "features": {
+      "sentiment": {},
     }
-
-    newInstance.analyze(analyzeparams).then(analysisresults =>
-        {
-            console.log(JSON.stringify(analysisresults, null, 2))
-            const sentimentresponse = analysisresults.result.entities[0].sentiment.label
-            return res.send({senti: sentimentresponse});
-        }).catch( err =>
-            {
-                console.log(err)
-            })
+  }
+  
+  newInstance.analyze(analyzeParams).then(analysisResults => {
+    let sentiment = JSON.stringify(analysisResults.result.sentiment.document.label, null, 2);
+    return res.send(sentiment);
+  }).catch(err => {
+    return res.send('error:' + err);
+  });
 });
 
 let server = app.listen(8080, () => {
